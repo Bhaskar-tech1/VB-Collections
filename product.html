@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VB Collections | Product</title>
+    <!-- Favicon -->
+    <link rel="icon" href="VB logo with horn accents cropped.png" type="image/png">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding: 4rem 0;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 0;
+            }
+        }
+
+        .product-image-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+
+        .product-image-section:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-info-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .product-breadcrumb {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .product-breadcrumb a:hover {
+            color: var(--accent-dark);
+            text-decoration: underline;
+        }
+
+        .product-detail-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            color: var(--text-main);
+        }
+
+        .product-detail-category {
+            font-size: 1rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-detail-price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .product-detail-tax {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .product-detail-meta {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .meta-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .meta-item i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .product-detail-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .add-to-cart-large {
+            flex: 1;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: var(--radius-pill);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .add-to-cart-large:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+        }
+
+        .share-btn-large {
+            padding: 0 1.5rem;
+            font-size: 1.2rem;
+            border-radius: var(--radius-pill);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+            background: var(--surface-color);
+            color: var(--text-main);
+        }
+
+        .share-btn-large:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(15, 44, 89, 0.1);
+        }
+
+        /* Support Links */
+        .product-support {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .support-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+
+        .support-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Related Products Section */
+        .related-products {
+            padding: 4rem 0;
+            background: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Utility */
+        #error-container {
+            display: none;
+            text-align: center;
+            padding: 5rem 1rem;
+        }
+
+        #loading-container {
+            text-align: center;
+            padding: 5rem 1rem;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                    class="logo-img"><span>Collections</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="category.html" class="active">Shop</a>
+                <a href="services.html">Services</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="cart.html" class="cart-icon-wrapper">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Loading indicator -->
+            <div id="loading-container">
+                <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+                <p style="margin-top: 1rem;">Loading Product Details...</p>
+            </div>
+
+            <!-- Error message container -->
+            <div id="error-container">
+                <i class="fas fa-exclamation-circle fa-4x" style="color: var(--accent-light); margin-bottom: 1rem;"></i>
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">Product Not Found</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">The product you're looking for might have been
+                    removed or the link is broken.</p>
+                <a href="category.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Return to Shop</a>
+            </div>
+
+            <!-- Main Product Area -->
+            <div id="product-detail-container" class="product-detail-container" style="display: none;">
+                <!-- Left: Product Image -->
+                <div class="product-image-section fade-in">
+                    <img id="pd-image" src="" alt="Product Image">
+                </div>
+
+                <!-- Right: Product Info -->
+                <div class="product-info-section fade-in" style="animation-delay: 0.1s;">
+                    <div class="product-breadcrumb" id="pd-breadcrumb">
+                        <a href="index.html">Home</a> <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                        <a href="category.html">Shop</a> <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                        <a href="#" id="crumb-category">Category</a>
+                    </div>
+
+                    <h1 class="product-detail-title" id="pd-title">Product Title</h1>
+                    <div class="product-detail-category" id="pd-subcategory">Subcategory</div>
+
+                    <div class="product-detail-price">
+                        <span id="pd-price">₹0</span>
+                        <span class="product-detail-tax">(Inclusive of all taxes)</span>
+                    </div>
+
+                    <div class="product-detail-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-shield-alt"></i> Guaranteed Premium Quality
+                        </div>
+
+                        <div class="meta-item">
+                            <i class="fas fa-certificate"></i> Trusted VB Collections Brand
+                        </div>
+                    </div>
+
+                    <div class="product-detail-actions">
+                        <button class="add-to-cart-large" id="pd-add-to-cart">
+                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                        </button>
+                        <button class="share-btn-large" id="pd-share-btn" title="Share this product">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="product-support">
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Need Help?</span>
+                        <a href="https://wa.me/919059707303" target="_blank" class="support-link">
+                            <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.2rem;"></i> WhatsApp Us
+                        </a>
+                        <a href="contact.html" class="support-link">
+                            <i class="fas fa-envelope" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                            Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <section id="related-products-section" class="related-products" style="display: none;">
+            <div class="container">
+                <h2 class="section-title text-center mb-4">You May Also Like</h2>
+                <div class="product-grid" id="related-grid" style="margin-top: 3rem;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="color: #fff; margin-bottom: 1rem;">
+                        <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                            class="logo-img footer-logo-img"><span>Collections</span>
+                    </a>
+                    <p>Your premium destination for mobile accessories, gifts, and expert workshop services.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/_vb__collections_official_" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/c/919059707303" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="category.html">Shop</a>
+                        <a href="services.html">Services</a>
+                        <a href="cart.html">Cart</a>
+                        <a href="contact.html">Contact Us</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <div class="footer-links">
+                        <p><i class="fas fa-map-marker-alt"></i> Palakonda Road, Rajam</p>
+                        <p><i class="fas fa-phone-alt"></i> 9059707303</p>
+                        <p><i class="fab fa-whatsapp"></i> 9059707303</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> VB Collections. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/product-page.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VB Collections | Shopping Cart</title>
+    <!-- Favicon -->
+    <link rel="icon" href="VB logo with horn accents cropped.png" type="image/png">
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .cart-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin: 3rem auto 5rem;
+        }
+
+        .cart-items-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .qty-btn:hover {
+            background: rgba(15, 44, 89, 0.05);
+        }
+
+        .qty-display {
+            width: 40px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .remove-btn {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .remove-btn:hover {
+            background: var(--error-color);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* Order Summary Widget */
+        .order-summary {
+            background: var(--surface-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--border-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            margin-top: 2rem;
+            background: #25D366;
+            /* WhatsApp Green */
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .checkout-btn:hover {
+            background: #1DBD5A;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cart-item {
+                display: grid;
+                grid-template-columns: 85px 1fr;
+                grid-template-areas: 
+                    "img details"
+                    "img controls";
+                gap: 0.25rem 1rem;
+                align-items: center;
+                padding: 1rem 0;
+            }
+
+            .cart-item-img {
+                grid-area: img;
+                width: 85px;
+                height: 85px;
+                align-self: start;
+            }
+
+            .cart-item-details {
+                grid-area: details;
+            }
+
+            .cart-item-title {
+                font-size: 1rem;
+                word-break: break-word;
+                margin-bottom: 0.25rem;
+            }
+
+            .cart-item-price {
+                font-size: 0.95rem;
+            }
+
+            .cart-controls {
+                grid-area: controls;
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            
+            .qty-btn {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .remove-btn {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                    class="logo-img"><span>Collections</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="category.html">Shop</a>
+                <a href="services.html">Services</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="cart.html" class="cart-icon-wrapper active">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container fade-in">
+            <h1 style="margin-top: 3rem; margin-bottom: 1rem;">Your Cart</h1>
+
+            <div class="cart-container">
+                <div class="cart-items-section" id="cart-items-container">
+                    <!-- Javascript populated -->
+                </div>
+
+                <div class="order-summary" id="order-summary-container">
+                    <h3 style="margin-bottom: 1.5rem;">Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Items Total</span>
+                        <span id="summary-items">₹0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Price</span>
+                        <span id="summary-total">₹0</span>
+                    </div>
+
+                    <a href="#" id="whatsapp-checkout-btn" class="btn checkout-btn" target="_blank">
+                        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Order via WhatsApp
+                    </a>
+
+                    <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+                        <i class="fas fa-info-circle"></i> Complete your purchase by sending an automated WhatsApp
+                        message to our team.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 0;">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="color: #fff; margin-bottom: 1rem;">
+                        <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                            class="logo-img footer-logo-img"><span>Collections</span>
+                    </a>
+                    <p>Your premium destination for mobile accessories, gifts, and expert workshop services.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/_vb__collections_official_" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/c/919059707303" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="category.html">Shop</a>
+                        <a href="services.html">Services</a>
+                        <a href="cart.html">Cart</a>
+                        <a href="contact.html">Contact Us</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <div class="footer-links">
+                        <p><i class="fas fa-map-marker-alt"></i> Palakonda Road, Rajam</p>
+                        <p><i class="fas fa-phone-alt"></i> 9059707303</p>
+                        <p><i class="fab fa-whatsapp"></i> 9059707303</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom" style="margin-top: 0; border: none;">
+                &copy; <span id="year"></span> VB Collections. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const summaryContainer = document.getElementById('order-summary-container');
+            const items = cart.items;
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p style="margin: 1rem 0 2rem; color: var(--text-muted);">Looks like you haven't added anything yet.</p>
+                        <a href="category.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                summaryContainer.style.display = 'none';
+                return;
+            }
+
+            summaryContainer.style.display = 'block';
+            let html = '';
+
+            items.forEach(item => {
+                html += `
+                <div class="cart-item fade-in visible">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                    <div class="cart-item-details">
+                        <h4 class="cart-item-title">${item.name}</h4>
+                        <div class="cart-item-price">${formatCurrency(item.price)}</div>
+                    </div>
+                    <div class="cart-controls">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="updateQty('${item.id}', ${item.quantity - 1})"><i class="fas fa-minus"></i></button>
+                            <span class="qty-display">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty('${item.id}', ${item.quantity + 1})"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <button class="remove-btn" onclick="removeItem('${item.id}')" title="Remove item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Update Summary
+            document.getElementById('summary-items').textContent = cart.getTotalItems();
+            document.getElementById('summary-total').textContent = formatCurrency(cart.getTotalPrice());
+
+            // Generate Checkout Link
+            document.getElementById('whatsapp-checkout-btn').href = cart.generateWhatsAppLink();
+        }
+
+        // Global functions for inline onclick handlers above
+        window.updateQty = (id, newQty) => {
+            cart.updateQuantity(id, newQty);
+            renderCart();
+        };
+
+        window.removeItem = (id) => {
+            cart.removeItem(id);
+            renderCart();
+        };
+
+        // Listen for internal cart updates
+        window.addEventListener('cartUpdated', renderCart);
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+
+</html>

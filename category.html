@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VB Collections | Shop</title>
+    <!-- Favicon -->
+    <link rel="icon" href="VB logo with horn accents cropped.png" type="image/png">
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .shop-header {
+            padding: 4rem 0 2rem;
+            background: var(--surface-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Search + Filter Row */
+        .search-filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            outline: none;
+            background: var(--surface-color);
+            transition: all var(--transition-fast);
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+        }
+
+        .filter-toggle-btn {
+            padding: 0.85rem 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            background: var(--surface-color);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .filter-toggle-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        /* Category Pill Buttons */
+        .category-pills {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .category-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-pill {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            background: var(--surface-color);
+            font-family: var(--font-family);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-main);
+            transition: all var(--transition-fast);
+        }
+
+        .cat-pill:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .cat-pill.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        /* Filter Drawer */
+        .filter-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .filter-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .filter-drawer {
+            position: fixed;
+            top: 0;
+            right: -380px;
+            width: 360px;
+            max-width: 90vw;
+            height: 100%;
+            height: 100dvh;
+            background: var(--surface-color);
+            z-index: 1200;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .filter-drawer.active {
+            right: 0;
+        }
+
+        .filter-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-drawer-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .filter-drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-drawer-close:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-main);
+        }
+
+        .filter-drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-section h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-main);
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            background: transparent;
+            font-family: var(--font-family);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--text-main);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .price-range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .price-range-inputs span {
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .price-input {
+            flex: 1;
+            min-width: 0;
+            padding: 0.7rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            outline: none;
+            background: var(--bg-color);
+            box-sizing: border-box;
+        }
+
+        .price-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.15);
+        }
+
+        .filter-drawer-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-drawer-footer .btn {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                    class="logo-img"><span>Collections</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="category.html" class="active">Shop</a>
+                <a href="services.html">Services</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="cart.html" class="cart-icon-wrapper">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="shop-header">
+            <div class="container text-center">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;" class="fade-in">Our Collections</h1>
+                <p class="fade-in" style="animation-delay: 0.1s;">Explore our premium range of products</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Search + Filter Row -->
+            <div class="search-filter-row fade-in" style="animation-delay: 0.2s;">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search products...">
+                </div>
+                <button class="filter-toggle-btn" id="filter-toggle-btn">
+                    <i class="fas fa-sliders-h"></i> Filters
+                </button>
+            </div>
+
+            <!-- Category Pill Buttons -->
+            <div class="category-pills fade-in" style="animation-delay: 0.3s;">
+                <button class="cat-pill active" data-category="all">All</button>
+                <button class="cat-pill" data-category="Mobile Accessories"><i class="fas fa-mobile-alt"></i>
+                    Mobile</button>
+                <button class="cat-pill" data-category="Crockery"><i class="fas fa-mug-hot"></i> Crockery</button>
+                <button class="cat-pill" data-category="Gifts"><i class="fas fa-gift"></i> Gifts</button>
+                <button class="cat-pill" data-category="Customized Gifts"><i class="fas fa-tshirt"></i> Custom</button>
+                <button class="cat-pill" data-category="Gadgets"><i class="fas fa-gamepad"></i> Gadgets</button>
+            </div>
+
+            <!-- Hidden select elements for JS compatibility -->
+            <select id="category-filter" style="display:none;">
+                <option value="all">All</option>
+                <option value="Mobile Accessories">Mobile Accessories</option>
+                <option value="Crockery">Crockery</option>
+                <option value="Gifts">Gifts</option>
+                <option value="Customized Gifts">Customized Gifts</option>
+                <option value="Gadgets">Gadgets</option>
+            </select>
+            <select id="subcategory-filter" style="display:none;">
+                <option value="all">All Subcategories</option>
+            </select>
+            <select id="sort-filter" style="display:none;">
+                <option value="default">Recommended</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+            </select>
+
+            <!-- Filter Drawer Overlay -->
+            <div class="filter-overlay" id="filter-overlay"></div>
+            <div class="filter-drawer" id="filter-drawer">
+                <div class="filter-drawer-header">
+                    <h3><i class="fas fa-sliders-h"></i> Filters</h3>
+                    <button class="filter-drawer-close" id="filter-drawer-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="filter-drawer-body">
+                    <div class="filter-section">
+                        <h4>Subcategory</h4>
+                        <div class="filter-chips" id="subcategory-chips">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h4>Price Range</h4>
+                        <div class="price-range-inputs">
+                            <input type="number" id="price-min" placeholder="Min ₹" class="price-input">
+                            <span>—</span>
+                            <input type="number" id="price-max" placeholder="Max ₹" class="price-input">
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h4>Sort By</h4>
+                        <div class="filter-chips" id="sort-chips">
+                            <button class="filter-chip active" data-sort="default">Recommended</button>
+                            <button class="filter-chip" data-sort="price-low">Price: Low → High</button>
+                            <button class="filter-chip" data-sort="price-high">Price: High → Low</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-drawer-footer">
+                    <button class="btn btn-outline" id="filter-clear">Clear All</button>
+                    <button class="btn btn-primary" id="filter-apply">Apply Filters</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="product-grid" class="product-grid" style="margin-bottom: 2rem;">
+                <!-- Populated by filter.js -->
+            </div>
+
+            <!-- End of List WhatsApp -->
+            <div style="text-align: center; margin: 2rem 0 0; padding: 3rem 2rem; background: var(--surface-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px dashed var(--border-color);">
+                <i class="fas fa-search" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-main);">You've reached the end of the list</h3>
+                <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">Can't find what you are looking for? Text us your requirement directly on WhatsApp and we will find it for you!</p>
+                <a href="https://wa.me/919059707303?text=Hi%2C%20I%20am%20looking%20for%20a%20product%20that%20isn't%20listed%20in%20the%20shop." target="_blank" class="btn" style="background: #25D366; color: white; border: none; padding: 0.8rem 2rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem; margin-right: 0.5rem;"></i> Text us on WhatsApp
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="color: #fff; margin-bottom: 1rem;">
+                        <img src="VB logo with horn accents.png" alt="VB Collections Logo"
+                            class="logo-img footer-logo-img"><span>Collections</span>
+                    </a>
+                    <p>Your premium destination for mobile accessories, gifts, and expert workshop services.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/_vb__collections_official_" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/c/919059707303" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="category.html">Shop</a>
+                        <a href="services.html">Services</a>
+                        <a href="cart.html">Cart</a>
+                        <a href="contact.html">Contact Us</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <div class="footer-links">
+                        <p><i class="fas fa-map-marker-alt"></i> Palakonda Road, Rajam</p>
+                        <p><i class="fas fa-phone-alt"></i> 9059707303</p>
+                        <p><i class="fab fa-whatsapp"></i> 9059707303</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> VB Collections. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/filter.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
