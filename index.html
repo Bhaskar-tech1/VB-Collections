@@ -103,13 +103,13 @@
 
             <nav class="nav-links">
                 <a href="index.html" class="active">Home</a>
-                <a href="category.html">Shop</a>
-                <a href="services.html">Services</a>
-                <a href="contact.html">Contact</a>
+                <a href="pages/category.html">Shop</a>
+                <a href="pages/services.html">Services</a>
+                <a href="pages/contact.html">Contact</a>
             </nav>
 
             <div class="nav-actions">
-                <a href="cart.html" class="cart-icon-wrapper">
+                <a href="pages/cart.html" class="cart-icon-wrapper">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge">0</span>
                 </a>
@@ -131,8 +131,8 @@
                     <p style="font-size: 1.2rem; margin-bottom: 2rem;">Discover our curated collection of mobile
                         accessories, exclusive gifts, crockery, and professional workshop services.</p>
                     <div style="display: flex; gap: 1rem;">
-                        <a href="category.html" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
-                        <a href="services.html" class="btn btn-outline">Our Services</a>
+                        <a href="pages/category.html" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+                        <a href="pages/services.html" class="btn btn-outline">Our Services</a>
                     </div>
                 </div>
                 <div class="hero-image fade-in" style="flex: 1 1 400px; animation-delay: 0.2s;">
@@ -232,7 +232,7 @@
                     <!-- populated from products.js -->
                 </div>
                 <div style="margin-top: 3rem; text-align: center;">
-                    <a href="category.html" class="btn btn-outline">View All Products</a>
+                    <a href="pages/category.html" class="btn btn-outline">View All Products</a>
                 </div>
             </div>
         </section>
@@ -260,10 +260,10 @@
                     <h4>Quick Links</h4>
                     <div class="footer-links">
                         <a href="index.html">Home</a>
-                        <a href="category.html">Shop</a>
-                        <a href="services.html">Services</a>
-                        <a href="cart.html">Cart</a>
-                        <a href="contact.html">Contact Us</a>
+                        <a href="pages/category.html">Shop</a>
+                        <a href="pages/services.html">Services</a>
+                        <a href="pages/cart.html">Cart</a>
+                        <a href="pages/contact.html">Contact Us</a>
                     </div>
                 </div>
                 <div class="footer-col">
@@ -324,11 +324,11 @@
                     el.className = 'product-card fade-in visible';
                     el.style.animationDelay = `${i * 0.1}s`;
                     el.innerHTML = `
-                        <div class="product-img-wrapper" style="cursor: pointer;" onclick="window.location.href='product.html?id=${item.id}'">
+                        <div class="product-img-wrapper" style="cursor: pointer;" onclick="window.location.href='pages/product.html?id=${item.id}'">
                           <img src="${item.image}" alt="${item.name}" class="product-img" loading="lazy">
                         </div>
                         <div class="product-info">
-                          <h3 class="product-title" style="cursor: pointer;" onclick="window.location.href='product.html?id=${item.id}'">${item.name}</h3>
+                          <h3 class="product-title" style="cursor: pointer;" onclick="window.location.href='pages/product.html?id=${item.id}'">${item.name}</h3>
                           <p class="product-category" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">${item.category}</p>
                           <p style="font-size: 0.8rem; color: var(--accent-color); margin-bottom: 0.5rem; opacity: 0.8;">${item.subcategory || ''}</p>
                           <div class="product-price">${formatCurrency(item.price)}</div>
