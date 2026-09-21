@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VB Collections | Manage Products</title>
+  <link rel="icon" href="VB logo with horn accents cropped.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    .manage-page {
+      min-height: 100vh;
+      background: var(--bg-color);
+      padding: 6rem 1rem 3rem;
+    }
+
+    .manage-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .page-header h1 i {
+      color: var(--accent-dark);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      background: var(--surface-color);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-family);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary-color);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
+    }
+
+    /* Search & Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background: var(--surface-color);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .filter-bar input:focus,
+    .filter-bar select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-bar select {
+      min-width: 160px;
+    }
+
+    .results-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    /* Product List */
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface-color);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+
+    .product-item:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .product-item-img {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bg-color);
+      flex-shrink: 0;
+    }
+
+    .product-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-item-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-item-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .product-item-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      white-space: nowrap;
+      margin: 0 0.5rem;
+    }
+
+    .product-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .edit-btn {
+      background: rgba(0, 229, 255, 0.1);
+      color: var(--accent-dark);
+    }
+
+    .edit-btn:hover {
+      background: var(--accent-dark);
+      color: #fff;
+    }
+
+    .delete-btn {
+      background: rgba(231, 76, 60, 0.08);
+      color: #e74c3c;
+    }
+
+    .delete-btn:hover {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    /* Loading & Empty States */
+    .loading-state,
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .loading-state i {
+      font-size: 2rem;
+      color: var(--accent-dark);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      color: var(--border-color);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* ── Modal Overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ── Edit Modal (Bottom Sheet) ── */
+    .edit-modal {
+      background: var(--surface-color);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 520px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .edit-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .edit-modal-header h2 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .edit-modal-header h2 i {
+      color: var(--accent-dark);
+    }
+
+    .modal-close-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    .edit-modal .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .edit-modal .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.45rem;
+    }
+
+    .edit-modal .form-group input,
+    .edit-modal .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: var(--bg-color);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .edit-modal .form-group input:focus,
+    .edit-modal .form-group select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+    }
+
+    .edit-modal .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .edit-modal .save-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-family);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(15, 44, 89, 0.2);
+    }
+
+    .edit-modal .save-btn:hover:not(:disabled) {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .edit-modal .save-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ── Delete Confirm Modal ── */
+    .confirm-modal {
+      background: var(--surface-color);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 380px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      animation: scaleIn 0.25s ease;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2001;
+      display: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .confirm-modal.active {
+      display: block;
+    }
+
+    @keyframes scaleIn {
+      from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .confirm-modal .confirm-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 1rem;
+    }
+
+    .confirm-modal h3 {
+      font-size: 1.15rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .confirm-modal p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .confirm-modal .confirm-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .confirm-modal .cancel-btn {
+      flex: 1;
+      padding: 0.7rem;
+      background: var(--bg-color);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-family);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .confirm-modal .cancel-btn:hover {
+      background: var(--surface-color);
+      border-color: var(--primary-color);
+    }
+
+    .confirm-modal .delete-confirm-btn {
+      flex: 1;
+      padding: 0.7rem;
+      background: #e74c3c;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-family);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .confirm-modal .delete-confirm-btn:hover:not(:disabled) {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    .confirm-modal .delete-confirm-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      width: 90%;
+      max-width: 380px;
+    }
+
+    .toast {
+      width: 100%;
+      background: #fff;
+      border-radius: 10px;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-md);
+      animation: toastIn 0.35s ease;
+    }
+
+    .toast.success { border-left: 4px solid #2ECC71; }
+    .toast.error   { border-left: 4px solid #E74C3C; }
+    .toast.success i { color: #2ECC71; }
+    .toast.error   i { color: #E74C3C; }
+    .toast span { color: var(--text-main); font-weight: 500; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Mobile Responsive ── */
+    @media (max-width: 600px) {
+      .manage-page { padding: 5.5rem 0.75rem 2rem; }
+
+      .page-header { margin-bottom: 1rem; }
+      .page-header h1 { font-size: 1.3rem; }
+
+      .filter-bar { gap: 0.5rem; }
+      .filter-bar input { min-width: 0; font-size: 0.85rem; padding: 0.6rem 0.8rem; }
+      .filter-bar select { min-width: 120px; font-size: 0.85rem; padding: 0.6rem 0.8rem; }
+
+      .product-item { padding: 0.7rem; gap: 0.7rem; }
+      .product-item-img { width: 46px; height: 46px; }
+      .product-item-name { font-size: 0.85rem; }
+      .product-item-meta { font-size: 0.72rem; }
+      .product-item-price { font-size: 0.9rem; margin: 0; }
+
+      .product-item-actions { gap: 0.35rem; }
+      .action-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+
+      .edit-modal { padding: 1.25rem; }
+      .edit-modal .row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="VB logo with horn accents.png" alt="VB Collections Logo" class="logo-img">
+        <span>Collections</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="manage-page">
+    <div class="manage-container">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1><i class="fas fa-boxes-stacked"></i> Manage Products</h1>
+        <a href="admin.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Admin</a>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="filter-bar">
+        <input type="text" id="search-input" placeholder="Search products…">
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+          <option value="Mobile Accessories">Mobile Accessories</option>
+          <option value="Crockery">Crockery</option>
+          <option value="Gifts">Gifts</option>
+          <option value="Customized Gifts">Customized Gifts</option>
+          <option value="Gadgets">Gadgets</option>
+        </select>
+      </div>
+
+      <!-- Results Count -->
+      <div class="results-count" id="results-count"></div>
+
+      <!-- Product List -->
+      <div class="product-list" id="product-list">
+        <div class="loading-state" id="loading-state">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <p>Loading products…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Edit Modal Overlay -->
+  <div class="modal-overlay" id="edit-overlay">
+    <div class="edit-modal">
+      <div class="edit-modal-header">
+        <h2><i class="fas fa-pen"></i> Edit Product</h2>
+        <button class="modal-close-btn" id="edit-close"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="edit-form" autocomplete="off">
+        <input type="hidden" id="edit-id">
+
+        <div class="form-group">
+          <label for="edit-name">Product Name</label>
+          <input type="text" id="edit-name" required>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="edit-price">Price (₹)</label>
+            <input type="number" id="edit-price" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-category">Category</label>
+            <select id="edit-category" required>
+              <option value="Mobile Accessories">Mobile Accessories</option>
+              <option value="Crockery">Crockery</option>
+              <option value="Gifts">Gifts</option>
+              <option value="Customized Gifts">Customized Gifts</option>
+              <option value="Gadgets">Gadgets</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-subcategory">Subcategory</label>
+          <input type="text" id="edit-subcategory" list="edit-sub-list">
+          <datalist id="edit-sub-list">
+            <option value="Couple Gifts"><option value="Lighting Lamps"><option value="Radium Gifts">
+            <option value="Marble Gifts"><option value="Fibre Gifts"><option value="Granite Gifts">
+            <option value="House Hold Gifts"><option value="Toys"><option value="Watch">
+            <option value="Teddy"><option value="Wall Clocks"><option value="Mobile Cases">
+            <option value="Chargers"><option value="Cables"><option value="Ear Buds">
+            <option value="Screen Guards"><option value="Power Bank"><option value="Wireless Earphones">
+            <option value="Adapter"><option value="T-Shirts"><option value="Kitchen Items">
+            <option value="Trimmers"><option value="Iron Boxes"><option value="Lamps">
+            <option value="Speakers"><option value="Car Charger"><option value="Headset">
+            <option value="Mobile Skins">
+          </datalist>
+        </div>
+
+        <button type="submit" class="save-btn" id="save-btn">
+          <i class="fas fa-check"></i> Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" id="delete-overlay">
+    <div class="confirm-modal" id="confirm-modal">
+      <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
+      <h3>Delete Product?</h3>
+      <p id="delete-message">This product will be permanently removed from the website.</p>
+      <div class="confirm-actions">
+        <button class="cancel-btn" id="delete-cancel">Cancel</button>
+        <button class="delete-confirm-btn" id="delete-confirm"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // ─── Config ───────────────────────────────────────
+    const SUPABASE_URL = 'https://rrdsafwfytiakupvnfok.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZHNhZndmeXRpYWt1cHZuZm9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxODAyNTEsImV4cCI6MjA5MTc1NjI1MX0.o-07NHCj4GUJ2W7KEZT3xb3W7ug1_gntNpUV3z_2uKg';
+    const API = `${SUPABASE_URL}/rest/v1/products`;
+    const HEADERS = {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+      'Content-Type': 'application/json'
+    };
+
+    // ─── State ────────────────────────────────────────
+    let allProducts = [];
+    let filteredProducts = [];
+    let editingId = null;
+    let deletingId = null;
+
+    // ─── Elements ─────────────────────────────────────
+    const searchInput = document.getElementById('search-input');
+    const categoryFilter = document.getElementById('category-filter');
+    const productList = document.getElementById('product-list');
+    const loadingState = document.getElementById('loading-state');
+    const resultsCount = document.getElementById('results-count');
+
+    const editOverlay = document.getElementById('edit-overlay');
+    const editClose = document.getElementById('edit-close');
+    const editForm = document.getElementById('edit-form');
+    const saveBtn = document.getElementById('save-btn');
+
+    const deleteOverlay = document.getElementById('delete-overlay');
+    const confirmModal = document.getElementById('confirm-modal');
+    const deleteCancel = document.getElementById('delete-cancel');
+    const deleteConfirm = document.getElementById('delete-confirm');
+    const deleteMessage = document.getElementById('delete-message');
+
+    // ─── Format Currency ──────────────────────────────
+    const formatCurrency = (amount) => {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency", currency: "INR", maximumFractionDigits: 0
+      }).format(amount);
+    };
+
+    // ─── Fetch All Products ───────────────────────────
+    async function fetchProducts() {
+      try {
+        let all = [];
+        let offset = 0;
+        const LIMIT = 1000;
+        while (true) {
+          const res = await fetch(`${API}?select=*&order=created_at.desc&offset=${offset}&limit=${LIMIT}`, { headers: HEADERS });
+          if (!res.ok) throw new Error('Failed to fetch');
+          const data = await res.json();
+          all = all.concat(data);
+          if (data.length < LIMIT) break;
+          offset += LIMIT;
+        }
+        allProducts = all;
+        applyFilters();
+      } catch (err) {
+        productList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Failed to load products. Please try again.</p>
+          </div>`;
+      }
+    }
+
+    // ─── Filter & Render ──────────────────────────────
+    function applyFilters() {
+      const search = searchInput.value.toLowerCase().trim();
+      const category = categoryFilter.value;
+
+      filteredProducts = allProducts.filter(p => {
+        const matchSearch = !search ||
+          p.name.toLowerCase().includes(search) ||
+          (p.subcategory && p.subcategory.toLowerCase().includes(search));
+        const matchCategory = category === 'all' || p.category === category;
+        return matchSearch && matchCategory;
+      });
+
+      resultsCount.textContent = `${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} found`;
+      renderProducts();
+    }
+
+    function renderProducts() {
+      if (filteredProducts.length === 0) {
+        productList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <p>No products match your search.</p>
+          </div>`;
+        return;
+      }
+
+      productList.innerHTML = filteredProducts.map(p => `
+        <div class="product-item" data-id="${p.id}">
+          <img class="product-item-img" src="${p.image}" alt="${p.name}" loading="lazy">
+          <div class="product-item-info">
+            <div class="product-item-name">${p.name}</div>
+            <div class="product-item-meta">${p.category}${p.subcategory ? ' › ' + p.subcategory : ''}</div>
+          </div>
+          <div class="product-item-price">${formatCurrency(p.price)}</div>
+          <div class="product-item-actions">
+            <button class="action-btn edit-btn" title="Edit" onclick="openEdit('${p.id}')"><i class="fas fa-pen"></i></button>
+            <button class="action-btn delete-btn" title="Delete" onclick="openDelete('${p.id}')"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ─── Edit Modal ───────────────────────────────────
+    function openEdit(id) {
+      const p = allProducts.find(x => String(x.id) === String(id));
+      if (!p) return;
+
+      editingId = id;
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-name').value = p.name;
+      document.getElementById('edit-price').value = p.price;
+      document.getElementById('edit-category').value = p.category;
+      document.getElementById('edit-subcategory').value = p.subcategory || '';
+
+      editOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEdit() {
+      editOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      editingId = null;
+    }
+
+    editClose.addEventListener('click', closeEdit);
+    editOverlay.addEventListener('click', (e) => {
+      if (e.target === editOverlay) closeEdit();
+    });
+
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!editingId) return;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+      const updates = {
+        name: document.getElementById('edit-name').value.trim(),
+        price: Number(document.getElementById('edit-price').value),
+        category: document.getElementById('edit-category').value,
+        subcategory: document.getElementById('edit-subcategory').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API}?id=eq.${editingId}`, {
+          method: 'PATCH',
+          headers: { ...HEADERS, 'Prefer': 'return=minimal' },
+          body: JSON.stringify(updates)
+        });
+
+        if (!res.ok) throw new Error('Update failed');
+
+        // Update local data
+        const idx = allProducts.findIndex(p => String(p.id) === String(editingId));
+        if (idx !== -1) Object.assign(allProducts[idx], updates);
+
+        showToast(`"${updates.name}" updated! ✏️`, 'success');
+        closeEdit();
+        applyFilters();
+      } catch (err) {
+        showToast('Failed to update product', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-check"></i> Save Changes';
+      }
+    });
+
+    // ─── Delete Modal ─────────────────────────────────
+    function openDelete(id) {
+      const p = allProducts.find(x => String(x.id) === String(id));
+      if (!p) return;
+
+      deletingId = id;
+      deleteMessage.textContent = `"${p.name}" will be permanently removed from the website.`;
+
+      deleteOverlay.classList.add('active');
+      confirmModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDelete() {
+      deleteOverlay.classList.remove('active');
+      confirmModal.classList.remove('active');
+      document.body.style.overflow = '';
+      deletingId = null;
+    }
+
+    deleteCancel.addEventListener('click', closeDelete);
+    deleteOverlay.addEventListener('click', (e) => {
+      if (e.target === deleteOverlay) closeDelete();
+    });
+
+    deleteConfirm.addEventListener('click', async () => {
+      if (!deletingId) return;
+
+      deleteConfirm.disabled = true;
+      deleteConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      try {
+        const res = await fetch(`${API}?id=eq.${deletingId}`, {
+          method: 'DELETE',
+          headers: { ...HEADERS, 'Prefer': 'return=minimal' }
+        });
+
+        if (!res.ok) throw new Error('Delete failed');
+
+        // Remove from local data
+        allProducts = allProducts.filter(p => String(p.id) !== String(deletingId));
+
+        showToast('Product deleted 🗑️', 'success');
+        closeDelete();
+        applyFilters();
+      } catch (err) {
+        showToast('Failed to delete product', 'error');
+      } finally {
+        deleteConfirm.disabled = false;
+        deleteConfirm.innerHTML = '<i class="fas fa-trash"></i> Delete';
+      }
+    });
+
+    // ─── Toast ────────────────────────────────────────
+    function showToast(message, type = 'success') {
+      const wrap = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+      `;
+      wrap.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'toastIn 0.3s ease reverse forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ─── Event Listeners ──────────────────────────────
+    searchInput.addEventListener('input', applyFilters);
+    categoryFilter.addEventListener('change', applyFilters);
+
+    // ─── Init ─────────────────────────────────────────
+    fetchProducts();
+  </script>
+
+</body>
+</html>
